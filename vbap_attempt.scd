@@ -63,7 +63,7 @@ k.orientation = \horizontal;
 k.action_({
 	arg obj;
 	var angle;
-	angle = obj.value.linlin(0,1,-30,30).round;
+	angle = obj.value.linlin(0,1,-30,30).round.postln;
 	if(
 		x.isPlaying,{x.set(\azi, angle)}
 	);
@@ -92,8 +92,65 @@ SynthDef.new(\vbap_3D, {
 }).add;
 );
 
-Synth.new(\vbap_test, [\buf, ~sound.bufnum, \azi, 30, \ele, 0, \spr, 0]);
+//Synth.new(\vbap_3D, [\buf, ~sound.bufnum, \azi, 30, \ele, 0, \spr, 0]);
+
+Window.closeAll;
+//GUI
+w = Window.new("3D VBAP Panner", Rect(800, 400, 400, 450)).front;
+w.view.background_(Color.grey(0.8));
+w.view.decorator = FlowLayout(w.view.bounds);
+h = HLayout();
+v = VLayout(h);
+w.layout =  v;
+w.front;
+w.alwaysOnTop = true;
 
 
+//ON/OFF SWITCHER
+b = Button(w, Rect(20, 20, 340, 30))
+.states_([["PLAY", Color.black, Color.white],["PAUSE", Color.black, Color.white]])
+.action_({
+	arg obj;
+	if(
+		obj.value == 1,
+		{
+			x = Synth.new(\vbap_3D, [\buf, ~sound.bufnum, \azi, k.value.linlin(0,1,-180,180).round, \ele, l.value.linlin(0,1,-90,90).round]).register;
+		},{x.free}
+	);
+});
+
+
+//TEXT VIEW
+h.add(g = VLayout(), 2, \left);
+g.add(b);
+g.add(t = TextView());
+
+x = t.selectedString;
+
+//SLIDER FOR AZIMUTH
+v.add(k = Slider());
+k.orientation = \horizontal;
+
+k.action_({
+	arg obj;
+	var angle;
+	angle = obj.value.linlin(0,1,-180,180).round;
+	if(
+		x.isPlaying,{x.set(\azi, angle)}
+	);
+});
+
+//SLIDER FOR ELEVATION
+v.add(l = Slider());
+l.orientation = \horizontal;
+
+l.action_({
+	arg obj;
+	var elev;
+	elev = obj.value.linlin(0,1,-90,90).round.postln;
+	if(
+		x.isPlaying(x.set(\ele, elev))
+	);
+});
 )
 
