@@ -2,6 +2,19 @@ s.boot;
 
 //numSamples = numFrames * numChannels
 
+//SET SALA ARANYÓ
+/*o = Server.default.options;
+o.outDevice_("ASIO : Dante Virtual Soundcard (x64)");
+Server.default.reboot;
+)
+ServerOptions.numOutputBusChannels;
+s.plotTree;
+s.meter;
+ServerOptions.devices; // all devices
+ServerOptions.inDevices; // input devices
+ServerOptions.outDevices; // output devices
+*/
+
 //3D
 
 //3D VBAP
