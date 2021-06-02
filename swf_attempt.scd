@@ -66,17 +66,7 @@ for(0, triplet_indices.size-1,
 		invdet = 1.0 / (  (lp1x * ((lp2y * lp3z) - (lp2z * lp3y)))
 			- (lp1y * ((lp2x * lp3z) - (lp2z * lp3x)))
 			+ (lp1z * ((lp2x * lp3y) - (lp2y * lp3x))));
-		/*
-		invmx[0] = ((lp2y * lp3z) - (lp2z * lp3y)) * invdet;
-		invmx[3] = ((lp1y * lp3z) - (lp1z * lp3y)) * invdet.neg;
-		invmx[6] = ((lp1y * lp2z) - (lp1z * lp2y)) * invdet;
-		invmx[1] = ((lp2x * lp3z) - (lp2z * lp3x)) * invdet.neg;
-		invmx[4] = ((lp1x * lp3z) - (lp1z * lp3x)) * invdet;
-		invmx[7] = ((lp1x * lp2z) - (lp1z * lp2x)) * invdet.neg;
-		invmx[2] = ((lp2x * lp3y) - (lp2y * lp3x)) * invdet;
-		invmx[5] = ((lp1x * lp3y) - (lp1y * lp3x)) * invdet.neg;
-		invmx[8] = ((lp1x * lp2y) - (lp1y * lp2x)) * invdet;
-		*/
+
 		invmx[0] = ((lp2y * lp3z) - (lp2z * lp3y)) * invdet;
 		invmx[3] = ((lp1y * lp3z) - (lp1z * lp3y)) * invdet.neg;
 		invmx[6] = ((lp1y * lp2z) - (lp1z * lp2y)) * invdet;
@@ -91,25 +81,12 @@ for(0, triplet_indices.size-1,
 });
 
 
-//SECCIÓ PER FER PROVES AMB LES MATRIUS INVERSES
-
-
-
-
-
-//OH YEAH S'ACABA AQUI LA SECCIÓ DE PROVES
-
-
-
-//create an array containing only the inversion matrices for each triplet
 p0 = Array.newClear(3);
-//convert source location to cartesian coordinates
 p0[0] = 1;
 p0[1] = 0;
 p0[2] = 0;
 "x: % y: % z: % \n".postf(p0[0], p0[1], p0[2]);
 
-//check to which triplet corresponds the source location -> look for the triangle in which it is inside
 
 big_sm_g = -100000.0;	/* initial value for largest minimum gain value */
 best_neg_g_am = 3;		  /* how many negative values in this set */
