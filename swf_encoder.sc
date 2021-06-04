@@ -1,5 +1,6 @@
 SWFEncoder{
 	classvar <vertices, <triplet_indices, <x_coordinates, <y_coordinates, <z_coordinates, <inverse_matrices;
+	classvar <matrix_A0, <matrix_A1, <matrix_B1, <matrix_B0, <matrix_P0, <matrix_P1, <matrix_Q1, <matrix_Q0;
 
 	*new {
 		^super.new.init();
@@ -7,14 +8,25 @@ SWFEncoder{
 
 	//declare global variables, which are the same no matter the source localization we are encoding
 	init {
+
 		vertices = this.loadMatrix("/swf/swf-master/swf-interp_matrices/vertices_2.txt");
-		triplet_indices = this.loadMatrix("/swf/triplet_indices.txt").asInteger;
+		triplet_indices = this.loadMatrix("/swf/triplet_indices_good.txt").asInteger;
 
 		x_coordinates = this.getCoordinates(0);
 		y_coordinates = this.getCoordinates(1);
 		z_coordinates = this.getCoordinates(2);
 		inverse_matrices = this.getInvMatrices();
 
+
+
+		matrix_A0 = this.loadMatrix("/swf/swf-master/swf-interp_matrices/mat_A_0.txt").flop;
+		matrix_A1 = this.loadMatrix("/swf/swf-master/swf-interp_matrices/mat_A_1.txt").flop;
+		matrix_B0 = this.loadMatrix("/swf/swf-master/swf-interp_matrices/mat_B_0.txt").flop;
+		matrix_B1 = this.loadMatrix("/swf/swf-master/swf-interp_matrices/mat_B_1.txt").flop;
+		matrix_P0 = this.loadMatrix("/swf/swf-master/swf-interp_matrices/mat_P_0.txt").flop;
+		matrix_P1 = this.loadMatrix("/swf/swf-master/swf-interp_matrices/mat_P_1.txt").flop;
+		matrix_Q0 = this.loadMatrix("/swf/swf-master/swf-interp_matrices/mat_Q_0.txt").flop;
+		matrix_Q1 =	this.loadMatrix("/swf/swf-master/swf-interp_matrices/mat_Q_1.txt").flop;
     }
 
 	//load matrices files from the library
@@ -140,7 +152,9 @@ SWFEncoder{
 						//gains.postln;
 				},{});
 		});
-		power =((gains[0]**2) + (gains[1]**2) + (gains[2]**2)).sqrt;
+
+		//NORMALITZACIÓ
+		power =(gains[0]+gains[1]+gains[2]);
 		gains[0] = gains[0]/power;
 		gains[1] = gains[1]/power;
 		gains[2] = gains[2]/power;
@@ -157,9 +171,7 @@ SWFEncoder{
 	matmul{|mat1, mat2|
 		var result;
 
-		//if(mat1[0].size != mat2[0].size,{"WARNING: matrix dimensions are wrong".postln; result = 0; ^result},{});
-
-		result = Array.fill(mat2[0].size-1,{
+		result = Array.fill(mat2[0].size,{
 			arg i;var sum = 0;
 			for(0,mat1.size-1,{
 				arg j;
@@ -169,17 +181,31 @@ SWFEncoder{
 		});
 		^result;
 	}
-/*
-	getWaveletTransform{|channel_gains|
-		var swf_transform;
+
+	getWaveletTransform{|azi, ele|
+		var swf_transform, channels;
 		var c0, c1, d0, d1;
-		var matrix_A1, matrix_A0, matrix_B1, matrix_B0;
+		channels = this.getGains(azi, ele);
+		c1 = this.matmul(channels, matrix_A1);
+		d1 = this.matmul(channels, matrix_B1);
+		c0 = this.matmul(c1, matrix_A0);
+		d0 = this.matmul(c1, matrix_B0);
 
-		matrix_A1 =
-		matrix_A0 =
-		matrix_B1 =
-		matrix_B0 =
+		swf_transform = Array.with(c0, d0);
+		^swf_transform;
+	}
 
-		swf_transform = matmul(channel_gains, )
-	}*/
+	getCoarses{|azi, ele, level|
+		var swf_transform, coarse;
+		swf_transform = this.getWaveletTransform(azi, ele);
+		if(level == 0 || level == 1,{
+			if(level == 1, {
+				//rebuild coarse at level 1 using the results of the swf transform
+				coarse = this.matmul(swf_transform[0],matrix_P0)+this.matmul(swf_transform[1],matrix_Q0);
+
+			},{coarse = swf_transform[0];})//if level is 0, we can use directly c0 in the swf transform
+		},{"Please provide a level which is either 0 or 1"});
+		^coarse;
+	}
+
 }

@@ -15,20 +15,21 @@ var temporal_gains, best_neg_g_am, big_sm_g, gains, power, winner_set;
 var channel_gains;
 
 
+"checkpoint".postln;
 
 //LOAD SWF MATRICES
-f = FileReader.read("C:/Users/quimm/Desktop/swf-master/swf-interp_matrices/vertices_2.txt");
+f = FileReader.read("C:/Users/usuario/AppData/Local/SuperCollider/Extensions/swf/swf-master/swf-interp_matrices/vertices_2.txt");//"C:/Users/quimm/Desktop/swf-master/swf-interp_matrices/vertices_2.txt"
 vertices2 = Array.fill2D(f.size, f[0].size,{
 	arg r, c;
 	f[r][c].asFloat;
 });
 
-f = FileReader.read("C:/Users/quimm/Desktop/tfg-swf-main/triplet_indices.txt");
+f = FileReader.read("C:/Users/usuario/AppData/Local/SuperCollider/Extensions/swf/triplet_indices.txt");//"C:/Users/quimm/Desktop/tfg-swf-main/triplet_indices.txt"
 triplet_indices = Array.fill2D(f.size, f[0].size,{
 	arg r, c;
-	f[r][c].asInteger;
+	f[r][c].asFloat;
 });
-
+)
 f = FileReader.read("C:/Users/quimm/Desktop/swf-master/swf-interp_matrices/mat_A_1.txt").flop;
 matrix_A1 = Array.fill2D(f.size, f[0].size,{
 	arg r, c;
