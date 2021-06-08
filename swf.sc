@@ -2,7 +2,7 @@ SWF{
 	*ar{|in, azi, ele, level|
 		var enc, dec;
 		enc = in * this.encode(azi, ele, level);
-		//aqui hi va algo
+		dec = this.decode(enc);//aqui hi va algo
 	}
 
 	*encode{|azi, ele, level|
@@ -11,9 +11,9 @@ SWF{
 		^result.getCoarses(azi, ele, level);
 	}
 
-	*decode{|azi, ele, level|
+	*decode{|encoded|
 		var result;
-		result = SWFDecoder.new();
-		^result.getCoarses(azi, ele, level);
+		result = SWFDecoder.new(encoded);
+		^result;
 	}
 }
