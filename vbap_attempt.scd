@@ -19,7 +19,7 @@ ServerOptions.outDevices; // output devices
 
 //3D VBAP
 (
-var lsp, a, b;
+var lsp, a, b, dim;
 var sound01, sound02, sound03;
 var drop_01, drop_02, drop_03;//drop buttons
 var add_01, add_02, add_03;//add file buttons
@@ -27,9 +27,14 @@ var p01, p02, p03, pAll;//play buttons
 var tazi01, telev01, tazi02, telev02, tazi03, telev03, volume;//dynamic text for azimuths and elevations values
 var sazi01, sazi02, sazi03, selev01, selev02, selev03;//sliders for azimuth and elevation
 var v01, v02, v03;//sliders for volume
+var leftLayout, centerLayout, rightLayout;
+var dropText, fileText, playText;
+var source01Layout, source02Layout, source03Layout;
+var vbapWindow;
 
-lsp = [[40,0],[-40,0],[80,0],[-80,0],[120,0],[-120,0],[160,0],[-160,0],[0,0],[24,21],[-24,21],[90,26],[-90,30],[154,24.5],[-155,24.5],[20,-12]];//CANVIAR EL SET D'ALTAVEUS
-a = VBAPSpeakerArray.new(3, lsp);
+lsp = [[40,0],[-40,0],[80,0],[-80,0],[120,0],[-120,0],[160,0],[-160,0],[0,0],[24,21],[-24,21],[90,26],[-90,30],[154,24.5],[-155,24.5],[20,-12]]; dim = 3;//CANVIAR EL SET D'ALTAVEUS
+//lsp = [-30, 30]; dim = 2;
+a = VBAPSpeakerArray.new(dim, lsp);
 b = Buffer.loadCollection(s, a.getSetsAndMatrices);
 
 //SYNTHDEFS
@@ -38,7 +43,7 @@ SynthDef.new(\vbap_3D_01, {
 	arg amp, out = 0, da = 2, rate = 1, buf, azi, ele, spr;
 	var sig, source;
 	source = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-	sig = VBAP.ar(2, source, b.bufnum, azi, ele, spr);//CANVIAR OUTPUT CHANNELS
+	sig = VBAP.ar(lsp.size, source, b.bufnum, azi, ele, spr);//CANVIAR OUTPUT CHANNELS
 	Out.ar(out, sig);
 }).add;
 );
@@ -48,7 +53,7 @@ SynthDef.new(\vbap_3D_02, {
 	arg amp, out = 0, da = 2, rate = 1, buf, azi, ele, spr;
 	var sig, source;
 	source = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-	sig = VBAP.ar(2, source, b.bufnum, azi, ele, spr);//CANVIAR OUTPUT CHANNELS
+	sig = VBAP.ar(lsp.size, source, b.bufnum, azi, ele, spr);//CANVIAR OUTPUT CHANNELS
 	Out.ar(out, sig);
 }).add;
 );
@@ -58,7 +63,7 @@ SynthDef.new(\vbap_3D_03, {
 	arg amp, out = 0, da = 2, rate = 1, buf, azi, ele, spr;
 	var sig, source;
 	source = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-	sig = VBAP.ar(2, source, b.bufnum, azi, ele, spr);//CANVIAR OUTPUT CHANNELS
+	sig = VBAP.ar(lsp.size, source, b.bufnum, azi, ele, spr);//CANVIAR OUTPUT CHANNELS
 	Out.ar(out, sig);
 }).add;
 );
@@ -69,28 +74,28 @@ Window.closeAll;
 
 
 //FROM NOW ON, THERE IS THE GUI DEVELOPMENT
-w = Window.new("3D VBAP Panner", Rect(400, 200, 800, 800)).front;
-w.view.background_(Color.grey(0.8));
-w.view.decorator = FlowLayout(w.view.bounds);
+vbapWindow = Window.new("3D VBAP Panner", Rect(400, 200, 800, 800)).front;
+vbapWindow.view.background_(Color.grey(0.8));
+vbapWindow.view.decorator = FlowLayout(vbapWindow.view.bounds);
 h = HLayout();
 v = VLayout(h);
-w.layout =  v;
-w.front;
-w.alwaysOnTop = true;
+vbapWindow.layout =  v;
+vbapWindow.front;
+vbapWindow.alwaysOnTop = true;
 
 
 
 
 //DRAG&DROP FOR AUDIO FILES
-h.add(g = VLayout(), 3, \left);
-h.add(f = VLayout(), 3, \center);
-h.add(l = VLayout(), 3, \right);
+h.add(leftLayout = VLayout(), 3, \left);
+h.add(centerLayout = VLayout(), 3, \center);
+h.add(rightLayout = VLayout(), 3, \right);
 
-g.add(r = StaticText(w));
-r.string = "Drop the sound files below (.wav/.aiff)";
-g.add(drop_01 = DragSink());
-g.add(drop_02 = DragSink());
-g.add(drop_03 = DragSink());
+leftLayout.add(dropText = StaticText(w));
+dropText.string = "Drop the sound files below (.wav/.aiff)";
+leftLayout.add(drop_01 = DragSink());
+leftLayout.add(drop_02 = DragSink());
+leftLayout.add(drop_03 = DragSink());
 
 drop_01.background = Color(1,0.5,0);
 drop_02.background = Color(0,0.6,0.6);
@@ -105,8 +110,8 @@ drop_03.receiveDragHandler = {arg obj; obj.object = View.currentDrag.shellQuote}
 
 
 //ADD FILE BUTTON
-f.add(r = StaticText(w));
-r.string = "Once file is dropped, click on ADD";
+centerLayout.add(fileText = StaticText(w));
+fileText.string = "Once file is dropped, click on ADD";
 add_01 = Button(w)
 .states_([["ADD", Color.black, Color.white],["FILE ADDED", Color.black, Color.white]])
 .action_({
@@ -145,8 +150,8 @@ add_03 = Button(w)
 
 
 //ON/OFF SWITCHER
-l.add(r = StaticText(w));
-r.string = "Then click on play";
+rightLayout.add(playText = StaticText(w));
+playText.string = "Then click on play";
 
 p01 = Button(w, Rect(20, 20, 340, 30))
 .states_([["PLAY", Color.black, Color.white],["PAUSE", Color.black, Color.white]])
@@ -197,32 +202,35 @@ pAll = Button(w)
 		},{p01.valueAction=0;p02.valueAction=0;p03.valueAction=0;}
 	);
 });
+
 //SHOW BUTTONS
-f.add(add_01);f.add(add_02);f.add(add_03);
-l.add(p01);l.add(p02);l.add(p03);
+centerLayout.add(add_01);centerLayout.add(add_02);centerLayout.add(add_03);
+rightLayout.add(p01);rightLayout.add(p02);rightLayout.add(p03);
 
 
 //SLIDERS PLACEMENT
 v.add(k = HLayout());
-k.add(p = VLayout(), 2, \left);
-k.add(c = VLayout(), 2, \center);
-k.add(t = VLayout(), 2, \right);
+k.add(source01Layout = VLayout(), 2, \left);
+k.add(source02Layout = VLayout(), 2, \center);
+k.add(source03Layout = VLayout(), 2, \right);
 
 
 //SLIDERS FOR AZIMUTH
 
 //SOURCE 1
-p.add(tazi01 = StaticText(w));
+source01Layout.add(tazi01 = StaticText(w));
 tazi01.string = "Azimuth angle [-180, 180]";
 
-p.add(sazi01 = Slider());
+source01Layout.add(sazi01 = Slider());
 sazi01.orientation = \horizontal;
 //sazi01.Color(1,0.5,0);
 
 sazi01.action_({
 	arg obj;
 	var angle;
-	angle = obj.value.linlin(0,1,-180,180).round;
+	if(dim == 2, {angle = obj.value.linlin(0,1,-30,30).round;}, {});
+	if(dim == 3, {angle = obj.value.linlin(0,1,-180,180).round;}, {});
+
 	tazi01.string = "Azimuth angle [-180, 180] = "++ angle;
 	if(
 		x.isPlaying,{x.set(\azi, angle)}
@@ -231,15 +239,18 @@ sazi01.action_({
 
 
 //SOURCE 2
-c.add(tazi02 = StaticText(w));
+source02Layout.add(tazi02 = StaticText(w));
 tazi02.string = "Azimuth angle [-180, 180]";
 
-c.add(sazi02 = Slider());
+source02Layout.add(sazi02 = Slider());
 sazi02.orientation = \horizontal;
 
 sazi02.action_({
 	arg obj;
 	var angle;
+	if(dim == 2, {angle = obj.value.linlin(0,1,-30,30).round;}, {});
+	if(dim == 3, {angle = obj.value.linlin(0,1,-180,180).round;}, {});
+
 	angle = obj.value.linlin(0,1,-180,180).round;
 	tazi02.string = "Azimuth angle [-180, 180] = "++ angle;
 	if(
@@ -249,15 +260,18 @@ sazi02.action_({
 
 
 //SOURCE 3
-t.add(tazi03 = StaticText(w));
+source03Layout.add(tazi03 = StaticText(w));
 tazi03.string = "Azimuth angle [-180, 180]";
 
-t.add(sazi03 = Slider());
+source03Layout.add(sazi03 = Slider());
 sazi03.orientation = \horizontal;
 
 sazi03.action_({
 	arg obj;
 	var angle;
+	if(dim == 2, {angle = obj.value.linlin(0,1,-30,30).round;}, {});
+	if(dim == 3, {angle = obj.value.linlin(0,1,-180,180).round;}, {});
+
 	angle = obj.value.linlin(0,1,-180,180).round;
 	tazi03.string = "Azimuth angle [-180, 180] = "++ angle;
 	if(
@@ -273,16 +287,19 @@ sazi03.background = Color(0.3,0.6,0);
 //SLIDER FOR ELEVATION
 
 //SOURCE 1
-p.add(telev01 = StaticText(w));
+source01Layout.add(telev01 = StaticText(w));
 telev01.string = "Elevation angle [-90, 90]";
 
-p.add(selev01 = Slider());
+source01Layout.add(selev01 = Slider());
 selev01.orientation = \vertical;
 
 selev01.action_({
 	arg obj;
 	var elev;
 	elev = obj.value.linlin(0,1,-90,90).round;
+	if(dim == 2, {elev = 0}, {});
+	if(dim == 3, {elev = obj.value.linlin(0,1,-180,180).round;}, {});
+
 	telev01.string = "Elevation angle [-90, 90] = "++ elev;
 	if(
 		x.isPlaying,{x.set(\ele, elev)}
@@ -291,15 +308,18 @@ selev01.action_({
 
 
 //SOURCE 2
-c.add(telev02 = StaticText(w));
+source02Layout.add(telev02 = StaticText(w));
 telev02.string = "Elevation angle [-90, 90]";
 
-c.add(selev02 = Slider());
+source02Layout.add(selev02 = Slider());
 selev02.orientation = \vertical;
 
 selev02.action_({
 	arg obj;
 	var elev;
+	if(dim == 2, {elev = 0}, {});
+	if(dim == 3, {elev = obj.value.linlin(0,1,-180,180).round;}, {});
+
 	elev = obj.value.linlin(0,1,-90,90).round;
 	telev02.string = "Elevation angle [-90, 90] = "++ elev;
 	if(
@@ -308,15 +328,18 @@ selev02.action_({
 });
 
 //SOURCE 3
-t.add(telev03 = StaticText(w));
+source03Layout.add(telev03 = StaticText(w));
 telev03.string = "Elevation angle [-90, 90]";
 
-t.add(selev03 = Slider());
+source03Layout.add(selev03 = Slider());
 selev03.orientation = \vertical;
 
 selev03.action_({
 	arg obj;
 	var elev;
+	if(dim == 2, {elev = 0}, {});
+	if(dim == 3, {elev = obj.value.linlin(0,1,-180,180).round;}, {});
+
 	elev = obj.value.linlin(0,1,-90,90).round;
 	telev03.string = "Elevation angle [-90, 90] = "++ elev;
 	if(
@@ -333,10 +356,10 @@ selev03.background = Color(0.3,0.6,0);
 //SLIDER FOR VOLUME
 
 //SOURCE 1
-p.add(volume = StaticText(w));
+source01Layout.add(volume = StaticText(w));
 volume.string = "Volume";
 
-p.add(v01 = Slider());
+source01Layout.add(v01 = Slider());
 v01.orientation = \vertical;
 
 v01.action_({
@@ -349,10 +372,10 @@ v01.action_({
 });
 
 //SOURCE 2
-c.add(volume = StaticText(w));
+source02Layout.add(volume = StaticText(w));
 volume.string = "Volume";
 
-c.add(v02 = Slider());
+source02Layout.add(v02 = Slider());
 v02.orientation = \vertical;
 
 v02.action_({
@@ -365,10 +388,10 @@ v02.action_({
 });
 
 //SOURCE 3
-t.add(volume = StaticText(w));
+source03Layout.add(volume = StaticText(w));
 volume.string = "Volume";
 
-t.add(v03 = Slider());
+source03Layout.add(v03 = Slider());
 v03.orientation = \vertical;
 
 v03.action_({
@@ -386,6 +409,4 @@ v03.background = Color(0.3,0.6,0);
 
 )
 
-
-s.plotTree;
-
+Platform.userExtensionDir;
