@@ -198,13 +198,12 @@ SWFEncoder{
 	getCoarses{|azi, ele, level|
 		var swf_transform, coarse;
 		swf_transform = this.getWaveletTransform(azi, ele);
-		if(level == 0 || level == 1,{
-			if(level == 1, {
+		if(level == 1,{
 				//rebuild coarse at level 1 using the results of the swf transform
 				coarse = this.matmul(swf_transform[0],matrix_P0)+this.matmul(swf_transform[1],matrix_Q0);
+		},{});
 
-			},{coarse = swf_transform[0];})//if level is 0, we can use directly c0 in the swf transform
-		},{"Please provide a level which is either 0 or 1"});
+		if(level == 0,{coarse = swf_transform[0];},{});//if level is 0, we can use directly c0 in the swf transform
 		^coarse;
 	}
 
