@@ -8,7 +8,7 @@ SWF{
 
 	loadMatrix{|directory|
 		var file, matrix;
-		file = FileReader.read(Platform.userExtensionDir ++ directory);
+		file = FileReader.read(Platform.userExtensionDir ++ directory, true);
 		matrix = Array.fill2D(file.size, file[0].size,{
 			arg r, c;
 			file[r][c].asFloat;

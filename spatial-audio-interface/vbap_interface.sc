@@ -28,6 +28,7 @@ VBAPInterface {
 		lspk_array = VBAPSpeakerArray(dim, lsp);
 		vbap_buffer = Buffer.loadCollection(s, lspk_array.getSetsAndMatrices);
 
+
 		(
 			SynthDef.new(\vbap_3D_01, {
 				arg amp, out = 0, da = 2, rate = 1, buf, azi, ele, spr;
@@ -154,7 +155,7 @@ VBAPInterface {
 			if(
 				obj.value == 1,
 				{
-					synth01 = Synth.new(\vbap_3D_01, [\amp, v01.value,\buf, sound01.bufnum, \azi, sazi01.value.linlin(0,1,-180,180).round, \ele, selev01.value.linlin(0,1,-90,90).round]).register;
+					synth01 = Synth.new(\vbap_3D_01, [\amp, v01.value,\buf, sound01.bufnum, \azi, sazi01.value.linlin(0,1,-180,180).round.neg, \ele, selev01.value.linlin(0,1,-90,90).round]).register;
 				},{synth01.free}
 			);
 		});
@@ -166,7 +167,7 @@ VBAPInterface {
 			if(
 				obj.value == 1,
 				{
-					synth02 = Synth.new(\vbap_3D_02, [\amp, v02.value,\buf, sound02.bufnum, \azi, sazi02.value.linlin(0,1,-180,180).round, \ele, selev02.value.linlin(0,1,-90,90).round]).register;
+					synth02 = Synth.new(\vbap_3D_02, [\amp, v02.value,\buf, sound02.bufnum, \azi, sazi02.value.linlin(0,1,-180,180).round.neg, \ele, selev02.value.linlin(0,1,-90,90).round]).register;
 				},{synth02.free}
 			);
 		});
@@ -178,7 +179,7 @@ VBAPInterface {
 			if(
 				obj.value == 1,
 				{
-					synth03 = Synth.new(\vbap_3D_03, [\amp, v03.value,\buf, sound03.bufnum, \azi, sazi03.value.linlin(0,1,-180,180).round, \ele, selev03.value.linlin(0,1,-90,90).round]).register;
+					synth03 = Synth.new(\vbap_3D_03, [\amp, v03.value,\buf, sound03.bufnum, \azi, sazi03.value.linlin(0,1,-180,180).round.neg, \ele, selev03.value.linlin(0,1,-90,90).round]).register;
 				},{synth03.free}
 			);
 		});
@@ -213,18 +214,19 @@ VBAPInterface {
 
 		//SOURCE 1
 		source01Layout.add(tazi01 = StaticText(vbapWindow));
-		if(dim == 2,{tazi01.string = "Azimuth angle [-30, 30]";},{});
-		if(dim == 3,{tazi01.string = "Azimuth angle [-180, 180]"},{});
+		if(dim == 2,{tazi01.string = "Azimuth angle [30, -30]";},{});
+		if(dim == 3,{tazi01.string = "Azimuth angle [180, -180]"},{});
 
 		source01Layout.add(sazi01 = Slider());
 		sazi01.orientation = \horizontal;
+		sazi01.value = 0.5;
 		//sazi01.Color(1,0.5,0);
 
 		sazi01.action_({
 			arg obj;
 			var angle;
-			if(dim == 2, {angle = obj.value.linlin(0,1,-30,30).round;tazi01.string = "Azimuth angle [-30, 30] = "++ angle;},{});
-			if(dim == 3, {angle = obj.value.linlin(0,1,-180,180).round; tazi01.string = "Azimuth angle [-180, 180] = "++ angle;},{});
+			if(dim == 2, {angle = obj.value.linlin(0,1,-30,30).round.neg; tazi01.string = "Azimuth angle [30, -30] = "++ angle; angle = angle.neg;},{});
+			if(dim == 3, {angle = obj.value.linlin(0,1,-180,180).round.neg; tazi01.string = "Azimuth angle [-180, 180] = "++ angle;},{});
 
 
 			if(
@@ -235,17 +237,18 @@ VBAPInterface {
 
 		//SOURCE 2
 		source02Layout.add(tazi02 = StaticText(vbapWindow));
-		if(dim == 2,{tazi02.string = "Azimuth angle [-30, 30]";},{});
-		if(dim == 3,{tazi02.string = "Azimuth angle [-180, 180]";},{});
+		if(dim == 2,{tazi02.string = "Azimuth angle [30, -30]";},{});
+		if(dim == 3,{tazi02.string = "Azimuth angle [180, -180]";},{});
 
 		source02Layout.add(sazi02 = Slider());
 		sazi02.orientation = \horizontal;
+		sazi02.value = 0.5;
 
 		sazi02.action_({
 			arg obj;
 			var angle;
-			if(dim == 2, {angle = obj.value.linlin(0,1,-30,30).round;tazi02.string = "Azimuth angle [-30, 30] = "++ angle;},{});
-			if(dim == 3, {angle = obj.value.linlin(0,1,-180,180).round; tazi02.string = "Azimuth angle [-180, 180] = "++ angle;},{});
+			if(dim == 2, {angle = obj.value.linlin(0,1,-30,30).round.neg;tazi02.string = "Azimuth angle [30, -30] = "++ angle;angle = angle.neg;},{});
+			if(dim == 3, {angle = obj.value.linlin(0,1,-180,180).round.neg; tazi02.string = "Azimuth angle [-180, 180] = "++ angle;},{});
 
 
 			if(
@@ -256,17 +259,18 @@ VBAPInterface {
 
 		//SOURCE 3
 		source03Layout.add(tazi03 = StaticText(vbapWindow));
-		if(dim == 2,{tazi03.string = "Azimuth angle [-30, 30]";},{});
-		if(dim == 3,{tazi03.string = "Azimuth angle [-180, 180]";},{});
+		if(dim == 2,{tazi03.string = "Azimuth angle [30, -30]";},{});
+		if(dim == 3,{tazi03.string = "Azimuth angle [180, -180]";},{});
 
 		source03Layout.add(sazi03 = Slider());
 		sazi03.orientation = \horizontal;
+		sazi03.value = 0.5;
 
 		sazi03.action_({
 			arg obj;
 			var angle;
-			if(dim == 2, {angle = obj.value.linlin(0,1,-30,30).round;tazi03.string = "Azimuth angle [-30, 30] = "++ angle;},{});
-			if(dim == 3, {angle = obj.value.linlin(0,1,-180,180).round;tazi03.string = "Azimuth angle [-180, 180] = "++ angle;},{});
+			if(dim == 2, {angle = obj.value.linlin(0,1,-30,30).round.neg; tazi03.string = "Azimuth angle [30, -30] = "++ angle;angle = angle.neg;},{});
+			if(dim == 3, {angle = obj.value.linlin(0,1,-180,180).round.neg; tazi03.string = "Azimuth angle [180, -180] = "++ angle;},{});
 
 
 			if(
@@ -287,6 +291,7 @@ VBAPInterface {
 
 		source01Layout.add(selev01 = Slider());
 		selev01.orientation = \horizontal;
+		selev01.value = 0.5;
 
 		selev01.action_({
 			arg obj;
@@ -307,6 +312,7 @@ VBAPInterface {
 
 		source02Layout.add(selev02 = Slider());
 		selev02.orientation = \horizontal;
+		selev02.value = 0.5;
 
 		selev02.action_({
 			arg obj;
@@ -326,6 +332,7 @@ VBAPInterface {
 
 		source03Layout.add(selev03 = Slider());
 		selev03.orientation = \horizontal;
+		selev03.value = 0.5;
 
 		selev03.action_({
 			arg obj;
@@ -353,6 +360,7 @@ VBAPInterface {
 
 		source01Layout.add(v01 = Slider());
 		v01.orientation = \horizontal;
+		v01.value = 0.1;
 
 		v01.action_({
 			arg obj;
@@ -370,6 +378,7 @@ VBAPInterface {
 
 		source02Layout.add(v02 = Slider());
 		v02.orientation = \horizontal;
+		v02.value = 0.1;
 
 		v02.action_({
 			arg obj;
@@ -387,6 +396,7 @@ VBAPInterface {
 
 		source03Layout.add(v03 = Slider());
 		v03.orientation = \horizontal;
+		v03.value = 0.1;
 
 		v03.action_({
 			arg obj;

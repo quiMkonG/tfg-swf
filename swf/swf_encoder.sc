@@ -1,6 +1,6 @@
 SWFEncoder : SWF{
 	classvar <vertices, <triplet_indices, <x_coordinates, <y_coordinates, <z_coordinates, <inverse_matrices;
-	classvar <matrix_A0, <matrix_A1, <matrix_B1, <matrix_B0, <matrix_P0, <matrix_P1, <matrix_Q1, <matrix_Q0;
+	classvar <matrix_A0, <matrix_A1, <matrix_B1, <matrix_B0, <matrix_P0, <matrix_Q0;
 
 	*new {
 		^super.new.init();
@@ -24,9 +24,7 @@ SWFEncoder : SWF{
 		matrix_B0 = this.loadMatrix("/swf/swf-auxiliar-matrices/swf-master/swf-interp_matrices/mat_B_0.txt").flop;
 		matrix_B1 = this.loadMatrix("/swf/swf-auxiliar-matrices/swf-master/swf-interp_matrices/mat_B_1.txt").flop;
 		matrix_P0 = this.loadMatrix("/swf/swf-auxiliar-matrices/swf-master/swf-interp_matrices/mat_P_0.txt").flop;
-		matrix_P1 = this.loadMatrix("/swf/swf-auxiliar-matrices/swf-master/swf-interp_matrices/mat_P_1.txt").flop;
 		matrix_Q0 = this.loadMatrix("/swf/swf-auxiliar-matrices/swf-master/swf-interp_matrices/mat_Q_0.txt").flop;
-		matrix_Q1 =	this.loadMatrix("/swf/swf-auxiliar-matrices/swf-master/swf-interp_matrices/mat_Q_1.txt").flop;
     }
 
 	//sorted arrays of triplet coordinates according to their indices
@@ -173,10 +171,9 @@ SWFEncoder : SWF{
 
 	getWaveletTransform{|azi, ele|
 		var swf_transform, channels;
-		var c0, c1, d0, d1;
+		var c0, c1, d0;
 		channels = this.getGains(azi, ele);
 		c1 = this.matmul(channels, matrix_A1);
-		d1 = this.matmul(channels, matrix_B1);
 		c0 = this.matmul(c1, matrix_A0);
 		d0 = this.matmul(c1, matrix_B0);
 

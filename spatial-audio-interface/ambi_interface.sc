@@ -30,7 +30,8 @@ AmbiInterface{
 				arg out = 0, buf, da = 2, rate = 1, amp, azi, ele;
 				var src, sig, dec;
 				src = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				sig = PanAmbi1O.ar(src, azi.degrad, ele.degrad);
+				//src = PinkNoise.ar(0.05);
+				sig = HOAEncoder.ar(order, src, azi.degrad, ele.degrad);
 				dec = DecAmbisonics.ar(sig,order);
 				Out.ar(out, dec);
 			}).add;
@@ -41,7 +42,7 @@ AmbiInterface{
 				arg out = 0, buf, da = 2, rate = 1, amp, azi, ele;
 				var src, sig, dec;
 				src = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				sig = PanAmbi1O.ar(src, azi.degrad, ele.degrad);
+				sig = HOAEncoder.ar(order, src, azi.degrad, ele.degrad);
 				dec = DecAmbisonics.ar(sig, order);
 				Out.ar(out, dec);
 			}).add;
@@ -52,7 +53,7 @@ AmbiInterface{
 				arg out = 0, buf, da = 2, rate = 1, amp, azi, ele;
 				var src, sig, dec;
 				src = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				sig = PanAmbi1O.ar(src, azi.degrad, ele.degrad);
+				sig = HOAEncoder.ar(order, src, azi.degrad, ele.degrad);
 				dec = DecAmbisonics.ar(sig, order);
 				Out.ar(out, dec);
 			}).add;
@@ -67,7 +68,8 @@ AmbiInterface{
 				arg out = 0, buf, da = 2, rate = 1, amp, azi, ele;
 				var src, sig, dec;
 				src = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				sig = PanAmbi3O.ar(src, azi.degrad, ele.degrad);
+				//src = PinkNoise.ar(0.05);
+				sig = HOAEncoder.ar(order, src, azi.degrad, ele.degrad);
 				dec = DecAmbisonics.ar(sig,order);
 				Out.ar(out, dec);
 			}).add;
@@ -78,7 +80,7 @@ AmbiInterface{
 				arg out = 0, buf, da = 2, rate = 1, amp, azi, ele;
 				var src, sig, dec;
 				src = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				sig = PanAmbi3O.ar(src, azi.degrad, ele.degrad);
+				sig = HOAEncoder.ar(order, src, azi.degrad, ele.degrad);
 				dec = DecAmbisonics.ar(sig, order);
 				Out.ar(out, dec);
 			}).add;
@@ -89,14 +91,13 @@ AmbiInterface{
 				arg out = 0, buf, da = 2, rate = 1, amp, azi, ele;
 				var src, sig, dec;
 				src = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				sig = PanAmbi3O.ar(src, azi.degrad, ele.degrad);
+				sig = HOAEncoder.ar(order, src, azi.degrad, ele.degrad);
 				dec = DecAmbisonics.ar(sig, order);
 				Out.ar(out, dec);
 			}).add;
 			);
 
 		});
-
 
 		userInterface = this.ambiWindowConfig(v,h);
 	}
@@ -195,7 +196,7 @@ AmbiInterface{
 			if(
 				obj.value == 1,
 				{
-					synth01 = Synth.new(\ambi_01, [\amp, v01.value,\buf, sound01.bufnum, \azi, sazi01.value.linlin(0,1,-180,180).round, \ele, selev01.value.linlin(0,1,-90,90).round]).register;
+					synth01 = Synth.new(\ambi_01, [\amp, v01.value,\buf, sound01.bufnum, \azi, sazi01.value.linlin(0,1,-180,180).round.neg, \ele, selev01.value.linlin(0,1,-90,90).round]).register;
 				},{synth01.free}
 			);
 		});
@@ -207,7 +208,7 @@ AmbiInterface{
 			if(
 				obj.value == 1,
 				{
-					synth02 = Synth.new(\ambi_02, [\amp, v02.value,\buf, sound02.bufnum, \azi, sazi02.value.linlin(0,1,-180,180).round, \ele, selev02.value.linlin(0,1,-90,90).round]).register;
+					synth02 = Synth.new(\ambi_02, [\amp, v02.value,\buf, sound02.bufnum, \azi, sazi02.value.linlin(0,1,-180,180).round.neg, \ele, selev02.value.linlin(0,1,-90,90).round]).register;
 				},{synth02.free}
 			);
 		});
@@ -219,7 +220,7 @@ AmbiInterface{
 			if(
 				obj.value == 1,
 				{
-					synth03 = Synth.new(\ambi_03, [\amp, v03.value,\buf, sound03.bufnum, \azi, sazi03.value.linlin(0,1,-180,180).round, \ele, selev03.value.linlin(0,1,-90,90).round]).register;
+					synth03 = Synth.new(\ambi_03, [\amp, v03.value,\buf, sound03.bufnum, \azi, sazi03.value.linlin(0,1,-180,180).round.neg, \ele, selev03.value.linlin(0,1,-90,90).round]).register;
 				},{synth03.free}
 			);
 		});
@@ -254,7 +255,7 @@ AmbiInterface{
 
 		//SOURCE 1
 		source01Layout.add(tazi01 = StaticText(ambiWindow));
-		tazi01.string = "Azimuth angle [-180, 180]";
+		tazi01.string = "Azimuth angle [180, -180]";
 
 		source01Layout.add(sazi01 = Slider());
 		sazi01.orientation = \horizontal;
@@ -263,8 +264,8 @@ AmbiInterface{
 		sazi01.action_({
 			arg obj;
 			var angle;
-			angle = obj.value.linlin(0,1,-180,180).round;
-			tazi01.string = "Azimuth angle [-180, 180] = "++ angle;
+			angle = obj.value.linlin(0,1,-180,180).round.neg;
+			tazi01.string = "Azimuth angle [180, -180] = "++ angle;
 
 			if(
 				synth01.isPlaying,{synth01.set(\azi, angle)}
@@ -274,7 +275,7 @@ AmbiInterface{
 
 		//SOURCE 2
 		source02Layout.add(tazi02 = StaticText(ambiWindow));
-		tazi02.string = "Azimuth angle [-180, 180]";
+		tazi02.string = "Azimuth angle [180, -180]";
 
 		source02Layout.add(sazi02 = Slider());
 		sazi02.orientation = \horizontal;
@@ -282,8 +283,8 @@ AmbiInterface{
 		sazi02.action_({
 			arg obj;
 			var angle;
-			angle = obj.value.linlin(0,1,-180,180).round;
-			tazi02.string = "Azimuth angle [-180, 180] = "++ angle;
+			angle = obj.value.linlin(0,1,-180,180).round.neg;
+			tazi02.string = "Azimuth angle [180, -180] = "++ angle;
 
 			if(
 				synth02.isPlaying,{synth02.set(\azi, angle)}
@@ -293,7 +294,7 @@ AmbiInterface{
 
 		//SOURCE 3
 		source03Layout.add(tazi03 = StaticText(ambiWindow));
-		tazi03.string = "Azimuth angle [-180, 180]";
+		tazi03.string = "Azimuth angle [180, -180]";
 
 		source03Layout.add(sazi03 = Slider());
 		sazi03.orientation = \horizontal;
@@ -301,8 +302,8 @@ AmbiInterface{
 		sazi03.action_({
 			arg obj;
 			var angle;
-			angle = obj.value.linlin(0,1,-180,180).round;
-			tazi03.string = "Azimuth angle [-180, 180] = "++ angle;
+			angle = obj.value.linlin(0,1,-180,180).round.neg;
+			tazi03.string = "Azimuth angle [180, -180] = "++ angle;
 
 
 			if(
@@ -328,7 +329,6 @@ AmbiInterface{
 			arg obj;
 			var elev;
 			elev = obj.value.linlin(0,1,-90,90).round;
-			elev = obj.value.linlin(0,1,-180,180).round;
 
 			telev01.string = "Elevation angle [-90, 90] = "++ elev;
 			if(

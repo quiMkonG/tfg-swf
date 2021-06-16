@@ -1,5 +1,5 @@
 SpatialAudio{
-	classvar initWindow, lsp, dim;
+	classvar initWindow;
 
 	*new{
 		^super.new.init();
@@ -68,6 +68,7 @@ SpatialAudio{
 	startVBAP{
 		var vbap_lsp_window, vbap_interface;
 		var v, h;
+		var lsp, dim;
 		var lsp_text;
 		var lsp_stereo_button, lsp_9_6_button;
 

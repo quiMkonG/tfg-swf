@@ -37,8 +37,8 @@ SWFInterface{
 		SynthDef.new(\swf_lvl0_01, {
 				arg amp, out = 0, da = 2, rate = 1, buf, coarse = #[0,0,0,0,0,0];
 				var sig, source;
-				source = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				//source = DC.ar(1.0);
+				//source = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
+				source = PinkNoise.ar(0.25);
 				sig = SWF.ar(source, coarse);//CANVIAR OUTPUT CHANNELS
 				Out.ar(out, sig);
 			}).add;
@@ -77,8 +77,8 @@ SWFInterface{
 			SynthDef.new(\swf_lvl1_01, {
 				arg amp, out = 0, da = 2, rate = 1, buf, coarse = #[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 				var sig, source;
-				source = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				//source = DC.ar(1.0);
+				//source = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
+				source = PinkNoise.ar(0.25);
 				sig = SWF.ar(source, coarse);//CANVIAR OUTPUT CHANNELS
 				Out.ar(out, sig);
 			}).add;
@@ -204,7 +204,7 @@ SWFInterface{
 				obj.value == 1,
 				{
 					synth01 = Synth.new(firstSynth, [\amp, v01.value, \buf, sound01.bufnum,
-						\coarse,  coarsing.value(sazi01.value.linlin(0,1,-180,180).round, selev01.value.linlin(0,1,-90,90).round)]).register;
+						\coarse,  coarsing.value(sazi01.value.linlin(0,1,-180,180).round.neg, selev01.value.linlin(0,1,-90,90).round)]).register;
 				},{synth01.free}
 			);
 		});
@@ -217,7 +217,7 @@ SWFInterface{
 				obj.value == 1,
 				{
 					synth02 = Synth.new(secondSynth, [\amp, v02.value,\buf, sound02.bufnum,
-						\coarse,  coarsing.value(sazi02.value.linlin(0,1,-180,180).round, selev02.value.linlin(0,1,-90,90).round)]).register;
+						\coarse,  coarsing.value(sazi02.value.linlin(0,1,-180,180).round.neg, selev02.value.linlin(0,1,-90,90).round)]).register;
 				},{synth02.free}
 			);
 		});
@@ -230,7 +230,7 @@ SWFInterface{
 				obj.value == 1,
 				{
 					synth03 = Synth.new(thirdSynth, [\amp, v03.value,\buf, sound03.bufnum,
-						\coarse,  coarsing.value(sazi03.value.linlin(0,1,-180,180).round, selev03.value.linlin(0,1,-90,90).round)]).register;
+						\coarse,  coarsing.value(sazi03.value.linlin(0,1,-180,180).round.neg, selev03.value.linlin(0,1,-90,90).round)]).register;
 				},{synth03.free}
 			);
 		});
@@ -265,7 +265,7 @@ SWFInterface{
 
 		//SOURCE 1
 		source01Layout.add(tazi01 = StaticText(swfWindow));
-		tazi01.string = "Azimuth angle [-180, 180]";
+		tazi01.string = "Azimuth angle [180, -180]";
 
 		source01Layout.add(sazi01 = Slider());
 		sazi01.orientation = \horizontal;
@@ -274,7 +274,7 @@ SWFInterface{
 		sazi01.action_({
 			arg obj;
 			var angle;
-			angle = obj.value.linlin(0,1,-180,180).round; tazi01.string = "Azimuth angle [-180, 180] = "++ angle;
+			angle = obj.value.linlin(0,1,-180,180).round.neg; tazi01.string = "Azimuth angle [180, -180] = "++ angle;
 
 			if(
 
@@ -287,7 +287,7 @@ SWFInterface{
 
 		//SOURCE 2
 		source02Layout.add(tazi02 = StaticText(swfWindow));
-		tazi02.string = "Azimuth angle [-180, 180]";
+		tazi02.string = "Azimuth angle [180, -180]";
 
 		source02Layout.add(sazi02 = Slider());
 		sazi02.orientation = \horizontal;
@@ -296,7 +296,7 @@ SWFInterface{
 		sazi02.action_({
 			arg obj;
 			var angle;
-			angle = obj.value.linlin(0,1,-180,180).round; tazi02.string = "Azimuth angle [-180, 180] = "++ angle;
+			angle = obj.value.linlin(0,1,-180,180).round.neg; tazi02.string = "Azimuth angle [180, -180] = "++ angle;
 
 			if(
 				synth02.isPlaying,{synth02.set(\coarse, coarsing.value(angle,selev02.value.linlin(0,1,-90,90).round))}
@@ -314,7 +314,7 @@ SWFInterface{
 		sazi03.action_({
 			arg obj;
 			var angle;
-			angle = obj.value.linlin(0,1,-180,180).round; tazi03.string = "Azimuth angle [-180, 180] = "++ angle;
+			angle = obj.value.linlin(0,1,-180,180).round.neg; tazi03.string = "Azimuth angle [-180, 180] = "++ angle;
 
 			if(
 				synth03.isPlaying,{synth03.set(\coarse, coarsing.value(angle,selev03.value.linlin(0,1,-90,90).round))}
@@ -346,7 +346,7 @@ SWFInterface{
 				synth01.isPlaying,{
 					//coarsing.value(sazi01.value.linlin(0,1,-180,180).round, elev).postln;
 					//sazi01.value.linlin(0,1,-180,180).round.postln;
-					synth01.set(\coarse, coarsing.value(sazi01.value.linlin(0,1,-180,180).round, elev))}
+					synth01.set(\coarse, coarsing.value(sazi01.value.linlin(0,1,-180,180).round.neg, elev))}
 			);
 		});
 
@@ -365,7 +365,7 @@ SWFInterface{
 
 			telev02.string = "Elevation angle [-90, 90] = "++ elev;
 			if(
-				synth02.isPlaying,{synth02.set(\coarse, coarsing.value(sazi02.value.linlin(0,1,-180,180).round, elev))}
+				synth02.isPlaying,{synth02.set(\coarse, coarsing.value(sazi02.value.linlin(0,1,-180,180).round.neg, elev))}
 			);
 		});
 
@@ -384,7 +384,7 @@ SWFInterface{
 
 			telev03.string = "Elevation angle [-90, 90] = "++ elev;
 			if(
-				synth03.isPlaying,{synth03.set(\coarse, coarsing.value(sazi03.value.linlin(0,1,-180,180).round, elev))}
+				synth03.isPlaying,{synth03.set(\coarse, coarsing.value(sazi03.value.linlin(0,1,-180,180).round.neg, elev))}
 			);
 		});
 
