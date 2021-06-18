@@ -7,6 +7,7 @@ Development of a sound spatialization tool based on wavelets within my final deg
 ## Guia d'usuari
 
 (Eng. below)
+
 Aquest treball consta de dues eines principals, ambdues dissenyades per l'entorn de programació de SuperCollider. La primera és una llibreria que habilita el tractament espacial del so en l'espai tridimensional mitjançant la codificació i descodificació d'àudio a través de Sound Wavelets (ref. Davide i Dani). La segona és una breu interfície d'interacció amb l'usuari per tal de poder localitzar fonts sonores en l'espai a temps real mitjançant VBAP, Ambisonics o Sound Wavelets (SWF). En aquest repositori hi trobaràs:
 
 1.- mesh plots: en aquesta carpeta hi trobaràs il·lustracions de la malla de 66 vèrtexs sobre la qual es treballa, així com els índex dels vèrtex que formen un triangle entre ells.
