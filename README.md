@@ -26,7 +26,7 @@ ATENCIÓ: les carpetes de spatial-audio i swf s'han de guardar al directori resu
 Platform.userExtensionDir;
 ```
 
-### Pre requisits
+### Requisits previs
 
 Per la llibreria de SWF no és necessari cap requisit a nivell de software. Tot i això, la descodificació està implmementada per una maquetació d'altaveus 9.6.
 
