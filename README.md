@@ -4,7 +4,7 @@ Desenvolupament d'una eina d'espacialització sonora basada en wavelets en el ma
 
 Development of a sound spatialization tool based on wavelets within my final degree project. Audiovisual Systems Engineering, UPF, Barcelona.
 
-##Guia d'usuari
+## Guia d'usuari
 
 (Eng. below)
 Aquest treball consta de dues eines principals, ambdues dissenyades per l'entorn de programació de SuperCollider. La primera és una llibreria que habilita el tractament espacial del so en l'espai tridimensional mitjançant la codificació i descodificació d'àudio a través de Sound Wavelets (ref. Davide i Dani). La segona és una breu interfície d'interacció amb l'usuari per tal de poder localitzar fonts sonores en l'espai a temps real mitjançant VBAP, Ambisonics o Sound Wavelets (SWF). En aquest repositori hi trobaràs:
@@ -25,13 +25,13 @@ ATENCIÓ: les carpetes de spatial-audio i swf s'han de guardar al directori resu
 Platform.userExtensionDir;
 ```
 
-###Pre requisits
+### Pre requisits
 
 Per la llibreria de SWF no és necessari cap requisit a nivell de software. Tot i això, la descodificació està implmementada per una maquetació d'altaveus 9.6.
 
 Per utilitzar la interfície d'usuari cal tenir instal·lat el quark de SC-HOA de SuperCollider (https://github.com/florian-grond/SC-HOA). És important mencionar que la interfície serveix per localitzar fonts monofòniques (en cas de fitxers d'àudio, SC només accepta els formats .wav i .aiff.
 
-###Ús de la llibreria
+### Ús de la llibreria
 
 Hi ha 3 classes. SWF, SWFEncoder i SWFDecoder. Les dues últimes hereten de la primera. El funcionament és el següent.
 
@@ -46,7 +46,7 @@ x = SWFEncoder.new();
 result = SWF.ar(input signal, x.getCoarses_lvl0(azi, ele));
 ```
 
-##User's Guide
+## User's Guide
 
 This project consists of two main tools, both designed for the SuperCollider programming environment. The first one is a library that enables the spatial treatment of sound in the three dimensional space through the encoding and decoding of audio using SoundWavelets (inserir ref. davide i dani). The second one is a brief user interaction interface to be able to localize sound sources in space in real-time using either VBAP, Ambisonics or Sound Wavelets (SWF). In this repo, you will find:
 
@@ -66,13 +66,13 @@ WARNING: the spatial-audio and swf folders must be stored in the user extension 
 Platform.userExtensionDir;
 ```
 
-###Previous Requirements
+### Previous Requirements
 
 For the SWF library it is not necessary any software requirement. However, note that de descoding is implemented for a 9.6 loudpspeaker layout.
 
 In order to use the user interface, it is necessary to have installed the SC-HOA quark (https://github.com/florian-grond/SC-HOA). It is important to mention that the interface is used to localize monophonic sound sources (in case of audio files, SC only accepts .wav and .aiff formats).
 
-###Use of the library
+### Use of the library
 
 There are 3 classes, SWF, SWFEncoder and SWFDecoder. The last two intherit from the first. It works the following way.
 
