@@ -8,7 +8,7 @@ Development of a sound spatialization tool based on wavelets within my final deg
 
 (Eng. below)
 
-Aquest treball consta de dues eines principals, ambdues dissenyades per l'entorn de programació de SuperCollider. La primera és una llibreria que habilita el tractament espacial del so en l'espai tridimensional mitjançant la codificació i descodificació d'àudio a través de Sound Wavelets (ref. Davide i Dani). La segona és una breu interfície d'interacció amb l'usuari per tal de poder localitzar fonts sonores en l'espai a temps real mitjançant VBAP, Ambisonics o Sound Wavelets (SWF). En aquest repositori hi trobaràs:
+Aquest treball consta de dues eines principals, ambdues dissenyades per l'entorn de programació de SuperCollider. La primera és una llibreria que habilita el tractament espacial del so en l'espai tridimensional mitjançant la codificació i descodificació d'àudio a través de Sound Wavelets (Scaini & Arteaga, Wavelet-Based Spatial Audio Format, 2020). La segona és una breu interfície d'interacció amb l'usuari per tal de poder localitzar fonts sonores en l'espai a temps real mitjançant VBAP, Ambisonics o Sound Wavelets (SWF). En aquest repositori hi trobaràs:
 
 1.- mesh plots: en aquesta carpeta hi trobaràs il·lustracions de la malla de 66 vèrtexs sobre la qual es treballa, així com els índex dels vèrtex que formen un triangle entre ells.
 
@@ -49,7 +49,7 @@ result = SWF.ar(input signal, x.getCoarses_lvl0(azi, ele));
 
 ## User's Guide
 
-This project consists of two main tools, both designed for the SuperCollider programming environment. The first one is a library that enables the spatial treatment of sound in the three dimensional space through the encoding and decoding of audio using SoundWavelets (inserir ref. davide i dani). The second one is a brief user interaction interface to be able to localize sound sources in space in real-time using either VBAP, Ambisonics or Sound Wavelets (SWF). In this repo, you will find:
+This project consists of two main tools, both designed for the SuperCollider programming environment. The first one is a library that enables the spatial treatment of sound in the three dimensional space through the encoding and decoding of audio using SoundWavelets (Scaini & Arteaga, Wavelet-Based Spatial Audio Format, 2020). The second one is a brief user interaction interface to be able to localize sound sources in space in real-time using either VBAP, Ambisonics or Sound Wavelets (SWF). In this repo, you will find:
 
 1.- mesh plots: in this folder you will find figures of the mesh of 66 vertices on which the rest of the library relies, as well as the vertices' indices that form a triangle.
 
@@ -87,3 +87,6 @@ There are 3 classes, SWF, SWFEncoder and SWFDecoder. The last two intherit from 
 x = SWFEncoder.new();
 result = SWF.ar(input signal, x.getCoarses_lvl0(azi, ele));
 ```
+
+## References
+D. Scaini, and D. Arteaga, "Wavelet-Based Spatial Audio Format," J. Audio Eng. Soc., vol. 68, no. 9, pp. 613-627, (2020 September.). doi: https://doi.org/10.17743/jaes.2020.0049
