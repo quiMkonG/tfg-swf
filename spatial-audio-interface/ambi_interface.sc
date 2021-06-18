@@ -23,10 +23,8 @@ AmbiInterface{
 		ambiWindow.layout =  v;
 		ambiWindow.front;
 
-		if(order == 1, {
-
 			(
-			SynthDef.new(\ambi_01,{
+			SynthDef.new(\ambi,{
 				arg out = 0, buf, da = 2, rate = 1, amp, azi, ele;
 				var src, sig, dec;
 				src = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
@@ -36,68 +34,6 @@ AmbiInterface{
 				Out.ar(out, dec);
 			}).add;
 			);
-
-			(
-			SynthDef.new(\ambi_02,{
-				arg out = 0, buf, da = 2, rate = 1, amp, azi, ele;
-				var src, sig, dec;
-				src = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				sig = HOAEncoder.ar(order, src, azi.degrad, ele.degrad);
-				dec = DecAmbisonics.ar(sig, order);
-				Out.ar(out, dec);
-			}).add;
-			);
-
-			(
-			SynthDef.new(\ambi_03,{
-				arg out = 0, buf, da = 2, rate = 1, amp, azi, ele;
-				var src, sig, dec;
-				src = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				sig = HOAEncoder.ar(order, src, azi.degrad, ele.degrad);
-				dec = DecAmbisonics.ar(sig, order);
-				Out.ar(out, dec);
-			}).add;
-			);
-
-		});
-
-		if(order == 3, {
-
-			(
-			SynthDef.new(\ambi_01,{
-				arg out = 0, buf, da = 2, rate = 1, amp, azi, ele;
-				var src, sig, dec;
-				src = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				//src = PinkNoise.ar(0.05);
-				sig = HOAEncoder.ar(order, src, azi.degrad, ele.degrad);
-				dec = DecAmbisonics.ar(sig,order);
-				Out.ar(out, dec);
-			}).add;
-			);
-
-			(
-			SynthDef.new(\ambi_02,{
-				arg out = 0, buf, da = 2, rate = 1, amp, azi, ele;
-				var src, sig, dec;
-				src = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				sig = HOAEncoder.ar(order, src, azi.degrad, ele.degrad);
-				dec = DecAmbisonics.ar(sig, order);
-				Out.ar(out, dec);
-			}).add;
-			);
-
-			(
-			SynthDef.new(\ambi_03,{
-				arg out = 0, buf, da = 2, rate = 1, amp, azi, ele;
-				var src, sig, dec;
-				src = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				sig = HOAEncoder.ar(order, src, azi.degrad, ele.degrad);
-				dec = DecAmbisonics.ar(sig, order);
-				Out.ar(out, dec);
-			}).add;
-			);
-
-		});
 
 		userInterface = this.ambiWindowConfig(v,h);
 	}
@@ -196,7 +132,7 @@ AmbiInterface{
 			if(
 				obj.value == 1,
 				{
-					synth01 = Synth.new(\ambi_01, [\amp, v01.value,\buf, sound01.bufnum, \azi, sazi01.value.linlin(0,1,-180,180).round.neg, \ele, selev01.value.linlin(0,1,-90,90).round]).register;
+					synth01 = Synth.new(\ambi, [\amp, v01.value,\buf, sound01.bufnum, \azi, sazi01.value.linlin(0,1,-180,180).round.neg, \ele, selev01.value.linlin(0,1,-90,90).round]).register;
 				},{synth01.free}
 			);
 		});
@@ -208,7 +144,7 @@ AmbiInterface{
 			if(
 				obj.value == 1,
 				{
-					synth02 = Synth.new(\ambi_02, [\amp, v02.value,\buf, sound02.bufnum, \azi, sazi02.value.linlin(0,1,-180,180).round.neg, \ele, selev02.value.linlin(0,1,-90,90).round]).register;
+					synth02 = Synth.new(\ambi, [\amp, v02.value,\buf, sound02.bufnum, \azi, sazi02.value.linlin(0,1,-180,180).round.neg, \ele, selev02.value.linlin(0,1,-90,90).round]).register;
 				},{synth02.free}
 			);
 		});
@@ -220,7 +156,7 @@ AmbiInterface{
 			if(
 				obj.value == 1,
 				{
-					synth03 = Synth.new(\ambi_03, [\amp, v03.value,\buf, sound03.bufnum, \azi, sazi03.value.linlin(0,1,-180,180).round.neg, \ele, selev03.value.linlin(0,1,-90,90).round]).register;
+					synth03 = Synth.new(\ambi, [\amp, v03.value,\buf, sound03.bufnum, \azi, sazi03.value.linlin(0,1,-180,180).round.neg, \ele, selev03.value.linlin(0,1,-90,90).round]).register;
 				},{synth03.free}
 			);
 		});
@@ -259,6 +195,7 @@ AmbiInterface{
 
 		source01Layout.add(sazi01 = Slider());
 		sazi01.orientation = \horizontal;
+		sazi01.value = 0.5;
 		//sazi01.Color(1,0.5,0);
 
 		sazi01.action_({
@@ -279,6 +216,7 @@ AmbiInterface{
 
 		source02Layout.add(sazi02 = Slider());
 		sazi02.orientation = \horizontal;
+		sazi02.value = 0.5;
 
 		sazi02.action_({
 			arg obj;
@@ -298,6 +236,7 @@ AmbiInterface{
 
 		source03Layout.add(sazi03 = Slider());
 		sazi03.orientation = \horizontal;
+		sazi03.value = 0.5;
 
 		sazi03.action_({
 			arg obj;
@@ -324,6 +263,7 @@ AmbiInterface{
 
 		source01Layout.add(selev01 = Slider());
 		selev01.orientation = \horizontal;
+		selev01.value = 0.5;
 
 		selev01.action_({
 			arg obj;
@@ -343,6 +283,7 @@ AmbiInterface{
 
 		source02Layout.add(selev02 = Slider());
 		selev02.orientation = \horizontal;
+		selev02.value = 0.5;
 
 		selev02.action_({
 			arg obj;
@@ -361,6 +302,7 @@ AmbiInterface{
 
 		source03Layout.add(selev03 = Slider());
 		selev03.orientation = \horizontal;
+		selev03.value = 0.5;
 
 		selev03.action_({
 			arg obj;
@@ -387,6 +329,7 @@ AmbiInterface{
 
 		source01Layout.add(v01 = Slider());
 		v01.orientation = \horizontal;
+		v01.value = 0.1;
 
 		v01.action_({
 			arg obj;
@@ -404,6 +347,7 @@ AmbiInterface{
 
 		source02Layout.add(v02 = Slider());
 		v02.orientation = \horizontal;
+		v02.value = 0.1;
 
 		v02.action_({
 			arg obj;
@@ -421,6 +365,7 @@ AmbiInterface{
 
 		source03Layout.add(v03 = Slider());
 		v03.orientation = \horizontal;
+		v03.value = 0.1;
 
 		v03.action_({
 			arg obj;

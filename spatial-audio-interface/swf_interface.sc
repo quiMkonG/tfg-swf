@@ -1,5 +1,5 @@
 SWFInterface{
-	classvar swfWindow, level, encoder, s, coarsing, bus01, bus02, bus03;
+	classvar swfWindow, level, encoder, s, coarsing;
 
 	*new{|lvl|
 		level = lvl;
@@ -10,7 +10,6 @@ SWFInterface{
 	init{
 		var v, h, userInterface;
 		var coarse;
-		var firstSynth, secondSynth, thirdSynth;
 		var result;
 
 		swfWindow = Window.new("Sound Wavelets", Rect(
@@ -34,87 +33,37 @@ SWFInterface{
 
 
 
-		SynthDef.new(\swf_lvl0_01, {
-				arg amp, out = 0, da = 2, rate = 1, buf, coarse = #[0,0,0,0,0,0];
-				var sig, source;
-				//source = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				source = PinkNoise.ar(0.25);
-				sig = SWF.ar(source, coarse);//CANVIAR OUTPUT CHANNELS
-				Out.ar(out, sig);
-			}).add;
-
-
-
-		SynthDef.new(\swf_lvl0_02, {
+		SynthDef.new(\swf, {
 				arg amp, out = 0, da = 2, rate = 1, buf, coarse = #[0,0,0,0,0,0];
 				var sig, source;
 				source = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				//source = DC.ar(1.0);
+				//source = PinkNoise.ar(0.25);
 				sig = SWF.ar(source, coarse);//CANVIAR OUTPUT CHANNELS
 				Out.ar(out, sig);
 			}).add;
-
-
-
-		SynthDef.new(\swf_lvl0_03, {
-				arg amp, out = 0, da = 2, rate = 1, buf, coarse = #[0,0,0,0,0,0];
-				var sig, source;
-				source = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				//source = DC.ar(1.0);
-				sig = SWF.ar(source, coarse);//CANVIAR OUTPUT CHANNELS
-				Out.ar(out, sig);
-			}).add;
-
-
-		firstSynth = \swf_lvl0_01; secondSynth = \swf_lvl0_02; thirdSynth = \swf_lvl0_03;
 		});
 
 		if(level == 1, {
 			coarsing = {arg azi, ele; encoder.getCoarses_lvl1(azi,ele)};
 
 
-		(
-			SynthDef.new(\swf_lvl1_01, {
-				arg amp, out = 0, da = 2, rate = 1, buf, coarse = #[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-				var sig, source;
-				//source = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				source = PinkNoise.ar(0.25);
-				sig = SWF.ar(source, coarse);//CANVIAR OUTPUT CHANNELS
-				Out.ar(out, sig);
-			}).add;
-		);
 
-		(
-			SynthDef.new(\swf_lvl1_02, {
+			SynthDef.new(\swf, {
 				arg amp, out = 0, da = 2, rate = 1, buf, coarse = #[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 				var sig, source;
 				source = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				//source = DC.ar(1.0);
+				//source = PinkNoise.ar(0.25);
 				sig = SWF.ar(source, coarse);//CANVIAR OUTPUT CHANNELS
 				Out.ar(out, sig);
 			}).add;
-		);
-
-		(
-			SynthDef.new(\swf_lvl1_03, {
-				arg amp, out = 0, da = 2, rate = 1, buf, coarse = #[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-				var sig, source;
-				source = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				//source = DC.ar(1.0);
-				sig = SWF.ar(source, coarse);//CANVIAR OUTPUT CHANNELS
-				Out.ar(out, sig);
-			}).add;
-		);
-
-			firstSynth = \swf_lvl1_01; secondSynth = \swf_lvl1_02; thirdSynth = \swf_lvl1_03;
 		});
 
-		userInterface = this.swfWindowConfig(v,h, firstSynth, secondSynth, thirdSynth);
+		userInterface = this.swfWindowConfig(v,h);
 	}
 
 
 
-	swfWindowConfig{|v,h, firstSynth, secondSynth, thirdSynth|
+	swfWindowConfig{|v,h|
 		var sound01, sound02, sound03;//buffers for sound files
 
 		var drop_01, drop_02, drop_03;//drop buttons
@@ -203,7 +152,7 @@ SWFInterface{
 			if(
 				obj.value == 1,
 				{
-					synth01 = Synth.new(firstSynth, [\amp, v01.value, \buf, sound01.bufnum,
+					synth01 = Synth.new(\swf, [\amp, v01.value, \buf, sound01.bufnum,
 						\coarse,  coarsing.value(sazi01.value.linlin(0,1,-180,180).round.neg, selev01.value.linlin(0,1,-90,90).round)]).register;
 				},{synth01.free}
 			);
@@ -216,7 +165,7 @@ SWFInterface{
 			if(
 				obj.value == 1,
 				{
-					synth02 = Synth.new(secondSynth, [\amp, v02.value,\buf, sound02.bufnum,
+					synth02 = Synth.new(\swf, [\amp, v02.value,\buf, sound02.bufnum,
 						\coarse,  coarsing.value(sazi02.value.linlin(0,1,-180,180).round.neg, selev02.value.linlin(0,1,-90,90).round)]).register;
 				},{synth02.free}
 			);
@@ -229,7 +178,7 @@ SWFInterface{
 			if(
 				obj.value == 1,
 				{
-					synth03 = Synth.new(thirdSynth, [\amp, v03.value,\buf, sound03.bufnum,
+					synth03 = Synth.new(\swf, [\amp, v03.value,\buf, sound03.bufnum,
 						\coarse,  coarsing.value(sazi03.value.linlin(0,1,-180,180).round.neg, selev03.value.linlin(0,1,-90,90).round)]).register;
 				},{synth03.free}
 			);
@@ -269,6 +218,7 @@ SWFInterface{
 
 		source01Layout.add(sazi01 = Slider());
 		sazi01.orientation = \horizontal;
+		sazi01.value = 0.5;
 		//sazi01.Color(1,0.5,0);
 
 		sazi01.action_({
@@ -277,11 +227,7 @@ SWFInterface{
 			angle = obj.value.linlin(0,1,-180,180).round.neg; tazi01.string = "Azimuth angle [180, -180] = "++ angle;
 
 			if(
-
-				synth01.isPlaying,{
-					//bus01.get;
-					//coarsing.value(angle,selev01.value.linlin(0,1,-90,90).round).postln;
-					synth01.set(\coarse, coarsing.value(angle,selev01.value.linlin(0,1,-90,90).round);)},{}
+				synth01.isPlaying,{synth01.set(\coarse, coarsing.value(angle,selev01.value.linlin(0,1,-90,90).round);)},{}
 			);
 		});
 
@@ -291,6 +237,7 @@ SWFInterface{
 
 		source02Layout.add(sazi02 = Slider());
 		sazi02.orientation = \horizontal;
+		sazi02.value = 0.5;
 		//sazi02.Color(1,0.5,0);
 
 		sazi02.action_({
@@ -309,6 +256,7 @@ SWFInterface{
 
 		source03Layout.add(sazi03 = Slider());
 		sazi03.orientation = \horizontal;
+		sazi03.value = 0.5;
 		//sazi03.Color(1,0.5,0);
 
 		sazi03.action_({
@@ -334,6 +282,7 @@ SWFInterface{
 
 		source01Layout.add(selev01 = Slider());
 		selev01.orientation = \horizontal;
+		selev01.value = 0.5;
 
 		selev01.action_({
 			arg obj;
@@ -343,10 +292,7 @@ SWFInterface{
 
 			telev01.string = "Elevation angle [-90, 90] = "++ elev;
 			if(
-				synth01.isPlaying,{
-					//coarsing.value(sazi01.value.linlin(0,1,-180,180).round, elev).postln;
-					//sazi01.value.linlin(0,1,-180,180).round.postln;
-					synth01.set(\coarse, coarsing.value(sazi01.value.linlin(0,1,-180,180).round.neg, elev))}
+				synth01.isPlaying,{synth01.set(\coarse, coarsing.value(sazi01.value.linlin(0,1,-180,180).round.neg, elev))}
 			);
 		});
 
@@ -356,6 +302,7 @@ SWFInterface{
 
 		source02Layout.add(selev02 = Slider());
 		selev02.orientation = \horizontal;
+		selev02.value = 0.5;
 
 		selev02.action_({
 			arg obj;
@@ -375,6 +322,7 @@ SWFInterface{
 
 		source03Layout.add(selev03 = Slider());
 		selev03.orientation = \horizontal;
+		selev03.value = 0.5;
 
 		selev03.action_({
 			arg obj;
@@ -401,6 +349,7 @@ SWFInterface{
 
 		source01Layout.add(v01 = Slider());
 		v01.orientation = \horizontal;
+		v01.value = 0.1;
 
 		v01.action_({
 			arg obj;
@@ -418,6 +367,7 @@ SWFInterface{
 
 		source02Layout.add(v02 = Slider());
 		v02.orientation = \horizontal;
+		v02.value = 0.1;
 
 		v02.action_({
 			arg obj;
@@ -435,6 +385,7 @@ SWFInterface{
 
 		source03Layout.add(v03 = Slider());
 		v03.orientation = \horizontal;
+		v03.value = 0.1;
 
 		v03.action_({
 			arg obj;

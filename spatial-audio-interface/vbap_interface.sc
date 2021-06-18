@@ -8,8 +8,8 @@ VBAPInterface {
 		^super.new.init(dim, lsp);
 	}
 
-	init{|dim, lsp|
-		var v, h, userInterface;
+	init{
+		var v, h;
 
 		vbapWindow = Window.new("VBAP", Rect(
 			Window.screenBounds.width/2-400,
@@ -30,36 +30,16 @@ VBAPInterface {
 
 
 		(
-			SynthDef.new(\vbap_3D_01, {
-				arg amp, out = 0, da = 2, rate = 1, buf, azi, ele, spr;
+			SynthDef.new(\vbap, {
+				arg amp, out = 0, da = 2, rate = 1, buf, azi, ele;
 				var sig, source;
 				source = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				sig = VBAP.ar(lsp.size, source, vbap_buffer.bufnum, azi, ele, spr);//CANVIAR OUTPUT CHANNELS
+				sig = VBAP.ar(lsp.size, source, vbap_buffer.bufnum, azi, ele);//CANVIAR OUTPUT CHANNELS
 				Out.ar(out, sig);
 			}).add;
 		);
 
-		(
-			SynthDef.new(\vbap_3D_02, {
-				arg amp, out = 0, da = 2, rate = 1, buf, azi, ele, spr;
-				var sig, source;
-				source = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				sig = VBAP.ar(lsp.size, source, vbap_buffer.bufnum, azi, ele, spr);//CANVIAR OUTPUT CHANNELS
-				Out.ar(out, sig);
-			}).add;
-		);
-
-		(
-			SynthDef.new(\vbap_3D_03, {
-				arg amp, out = 0, da = 2, rate = 1, buf, azi, ele, spr;
-				var sig, source;
-				source = PlayBuf.ar(numChannels: 1, bufnum: buf, rate: BufRateScale.kr(buf) * rate, doneAction: da)*amp;
-				sig = VBAP.ar(lsp.size, source, vbap_buffer.bufnum, azi, ele, spr);//CANVIAR OUTPUT CHANNELS
-				Out.ar(out, sig);
-			}).add;
-		);
-
-		userInterface = this.vbapWindowConfig(v,h);
+		this.vbapWindowConfig(v,h);
 	}
 
 	vbapWindowConfig { |v,h|
@@ -155,7 +135,7 @@ VBAPInterface {
 			if(
 				obj.value == 1,
 				{
-					synth01 = Synth.new(\vbap_3D_01, [\amp, v01.value,\buf, sound01.bufnum, \azi, sazi01.value.linlin(0,1,-180,180).round.neg, \ele, selev01.value.linlin(0,1,-90,90).round]).register;
+					synth01 = Synth.new(\vbap, [\amp, v01.value,\buf, sound01.bufnum, \azi, sazi01.value.linlin(0,1,-180,180).round.neg, \ele, selev01.value.linlin(0,1,-90,90).round]).register;
 				},{synth01.free}
 			);
 		});
@@ -167,7 +147,7 @@ VBAPInterface {
 			if(
 				obj.value == 1,
 				{
-					synth02 = Synth.new(\vbap_3D_02, [\amp, v02.value,\buf, sound02.bufnum, \azi, sazi02.value.linlin(0,1,-180,180).round.neg, \ele, selev02.value.linlin(0,1,-90,90).round]).register;
+					synth02 = Synth.new(\vbap, [\amp, v02.value,\buf, sound02.bufnum, \azi, sazi02.value.linlin(0,1,-180,180).round.neg, \ele, selev02.value.linlin(0,1,-90,90).round]).register;
 				},{synth02.free}
 			);
 		});
@@ -179,7 +159,7 @@ VBAPInterface {
 			if(
 				obj.value == 1,
 				{
-					synth03 = Synth.new(\vbap_3D_03, [\amp, v03.value,\buf, sound03.bufnum, \azi, sazi03.value.linlin(0,1,-180,180).round.neg, \ele, selev03.value.linlin(0,1,-90,90).round]).register;
+					synth03 = Synth.new(\vbap, [\amp, v03.value,\buf, sound03.bufnum, \azi, sazi03.value.linlin(0,1,-180,180).round.neg, \ele, selev03.value.linlin(0,1,-90,90).round]).register;
 				},{synth03.free}
 			);
 		});
@@ -225,7 +205,7 @@ VBAPInterface {
 		sazi01.action_({
 			arg obj;
 			var angle;
-			if(dim == 2, {angle = obj.value.linlin(0,1,-30,30).round.neg; tazi01.string = "Azimuth angle [30, -30] = "++ angle; angle = angle.neg;},{});
+			if(dim == 2, {angle = obj.value.linlin(0,1,-30,30).round.neg; tazi01.string = "Azimuth angle [30, -30] = "++ angle; },{});
 			if(dim == 3, {angle = obj.value.linlin(0,1,-180,180).round.neg; tazi01.string = "Azimuth angle [-180, 180] = "++ angle;},{});
 
 
@@ -247,7 +227,7 @@ VBAPInterface {
 		sazi02.action_({
 			arg obj;
 			var angle;
-			if(dim == 2, {angle = obj.value.linlin(0,1,-30,30).round.neg;tazi02.string = "Azimuth angle [30, -30] = "++ angle;angle = angle.neg;},{});
+			if(dim == 2, {angle = obj.value.linlin(0,1,-30,30).round.neg;tazi02.string = "Azimuth angle [30, -30] = "++ angle;},{});
 			if(dim == 3, {angle = obj.value.linlin(0,1,-180,180).round.neg; tazi02.string = "Azimuth angle [-180, 180] = "++ angle;},{});
 
 
@@ -269,7 +249,7 @@ VBAPInterface {
 		sazi03.action_({
 			arg obj;
 			var angle;
-			if(dim == 2, {angle = obj.value.linlin(0,1,-30,30).round.neg; tazi03.string = "Azimuth angle [30, -30] = "++ angle;angle = angle.neg;},{});
+			if(dim == 2, {angle = obj.value.linlin(0,1,-30,30).round.neg; tazi03.string = "Azimuth angle [30, -30] = "++ angle;},{});
 			if(dim == 3, {angle = obj.value.linlin(0,1,-180,180).round.neg; tazi03.string = "Azimuth angle [180, -180] = "++ angle;},{});
 
 

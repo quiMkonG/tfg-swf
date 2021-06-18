@@ -9,7 +9,7 @@ SpatialAudio{
 		var v, h;
 		var vbap_button, ambisonics_button, swf_button;
 		var interface_text;
-		var start_vbap, start_ambi, start_swf;
+
 
 		initWindow = Window.new("Spatialization Tools", Rect(
 			Window.screenBounds.width/2-100,
@@ -34,7 +34,7 @@ SpatialAudio{
 			if(
 				obj.value == 1,
 				{
-					start_vbap = this.startVBAP;//començar una classe de vbap interface
+					this.startVBAP;//començar una classe de vbap interface
 				},{}
 			);
 		});
@@ -46,7 +46,7 @@ SpatialAudio{
 			if(
 				obj.value == 1,
 				{
-					start_ambi = this.startAmbi;//començar una classe de ambisonics interface
+					this.startAmbi;//començar una classe de ambisonics interface
 				},{}
 			);
 		});
@@ -58,7 +58,7 @@ SpatialAudio{
 			if(
 				obj.value == 1,
 				{
-					start_swf = this.startSWF;//començar una classe de swf interface
+					this.startSWF;//començar una classe de swf interface
 				},{}
 			);
 		});
@@ -96,7 +96,7 @@ SpatialAudio{
 			if(
 				obj.value == 1,
 				{
-					lsp = [-30, 30];
+					lsp = [30, -30];
 					dim = 2;
 					vbap_lsp_window.close;
 					vbap_interface = VBAPInterface.new(dim, lsp);
@@ -131,7 +131,7 @@ SpatialAudio{
 			Window.screenBounds.width/3-75,
 			Window.screenBounds.height/2-50,
 			200,
-			100
+			150
 		)).front;
 		ambi_lsp_window.view.background_(Color.grey(0.8));
 		ambi_lsp_window.view.decorator = FlowLayout(ambi_lsp_window.view.bounds);
@@ -178,7 +178,7 @@ SpatialAudio{
 			Window.screenBounds.width/3-75,
 			Window.screenBounds.height/2-50,
 			200,
-			100
+			150
 		)).front;
 		swf_level_window.view.background_(Color.grey(0.8));
 		swf_level_window.view.decorator = FlowLayout(swf_level_window.view.bounds);
